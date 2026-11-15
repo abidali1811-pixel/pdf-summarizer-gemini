@@ -29,7 +29,7 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 copy .env.example .env          # then put your key in .env
 .\.venv\Scripts\python.exe scripts\check_setup.py   # verifies key, model, git hygiene
-.\.venv\Scripts\streamlit.exe run app.py
+.\.venv\Scripts\python.exe -m streamlit run app.py
 ```
 
 Get a free key at <https://aistudio.google.com/apikey>.
