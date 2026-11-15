@@ -24,11 +24,22 @@ PDF ──► extract ──► clean ──► chunk (by tokens)
 
 Requires Python 3.10+ (verified on 3.14.7).
 
+```bash
+python -m venv .venv
+. .venv/bin/activate
+python -m pip install -r requirements.txt
+cp .env.example .env              # then put your key in .env
+python scripts/check_setup.py     # verifies key, model, git hygiene
+streamlit run app.py
+```
+
+PowerShell users can use the equivalent Windows commands:
+
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-copy .env.example .env          # then put your key in .env
-.\.venv\Scripts\python.exe scripts\check_setup.py   # verifies key, model, git hygiene
+copy .env.example .env
+.\.venv\Scripts\python.exe scripts\check_setup.py
 .\.venv\Scripts\streamlit.exe run app.py
 ```
 

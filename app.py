@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import io
+import os
 
 import streamlit as st
 
@@ -33,6 +34,20 @@ from utils import (
 )
 
 st.set_page_config(page_title=APP_TITLE, page_icon=APP_ICON, layout="wide")
+
+
+def _env_setup_instructions() -> str:
+    if os.name == "nt":
+        return (
+            "copy .env.example .env\n"
+            "# then set GEMINI_API_KEY in .env\n"
+            ".\\.venv\\Scripts\\python.exe scripts\\check_setup.py"
+        )
+    return (
+        "cp .env.example .env\n"
+        "# then set GEMINI_API_KEY in .env\n"
+        "python scripts/check_setup.py"
+    )
 
 
 @st.cache_resource(show_spinner=False)
@@ -140,12 +155,10 @@ def main() -> None:
     st.caption("Upload a PDF and get a structured summary, powered by Google Gemini via LangChain.")
 
     if not settings.has_api_key:
-        st.error("GEMINI_API_KEY is not configured.")
-        st.code(
-            "copy .env.example .env\n# then set GEMINI_API_KEY in .env\n"
-            ".venv\\Scripts\\python.exe scripts\\check_setup.py",
-            language="powershell",
+        st.error(
+            "GEMINI_API_KEY is not configured. Add it to a local .env file or export it in your shell, then restart Streamlit."
         )
+        st.code(_env_setup_instructions(), language="bash" if os.name != "nt" else "powershell")
         st.stop()
 
     with st.sidebar:
