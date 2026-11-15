@@ -1,0 +1,8 @@
+# Normalise line endings so Windows checkouts do not churn the whole repo.
+* text=auto
+*.py text eol=lf
+*.md text eol=lf
+*.ini text eol=lf
+*.txt text eol=lf
+*.html text eol=lf
+*.pdf binary
