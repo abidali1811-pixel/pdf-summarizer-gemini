@@ -21,6 +21,20 @@ All 11 checks passed.
 | API | `gemini-3.6-flash` available to this key | PASS |
 | API | Live `generateContent` returns `'OK'` in 0.9 s | PASS |
 
+## GitHub authentication
+
+| Check | Result |
+| --- | --- |
+| Credential stored for `github.com` | PASS — Windows Credential Manager, `LegacyGeneric:target=git:https://github.com` |
+| Token authenticates via API | PASS — identity `abidali1811-pixel` (User) |
+| Token scopes | `gist`, `repo`, `workflow` — sufficient to push and create repos |
+| Remote repository exists | PASS — created private via API after the first push returned `Repository not found` |
+| First push (`main`) | PASS — `[new branch] main -> main` |
+| Remote tree contains `.env` | No — only `.env.example` |
+
+No interactive login was needed: an existing Git Credential Manager entry for the
+account was reused, so no browser prompt appeared.
+
 ## Environment
 
 | Item | Value |
