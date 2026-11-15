@@ -10,6 +10,7 @@ import hashlib
 import io
 
 import streamlit as st
+from streamlit.errors import StreamlitSecretNotFoundError
 
 from config import (
     APP_ICON,
@@ -135,16 +136,18 @@ def _render_summary(result, document: Document) -> None:
 
 
 def main() -> None:
-    settings = get_settings()
+    try:
+        settings = get_settings(secrets=st.secrets)
+    except StreamlitSecretNotFoundError:
+        settings = get_settings()
     st.title(f"{APP_ICON} {APP_TITLE}")
     st.caption("Upload a PDF and get a structured summary, powered by Google Gemini via LangChain.")
 
     if not settings.has_api_key:
         st.error("GEMINI_API_KEY is not configured.")
-        st.code(
-            "copy .env.example .env\n# then set GEMINI_API_KEY in .env\n"
-            ".venv\\Scripts\\python.exe scripts\\check_setup.py",
-            language="powershell",
+        st.info(
+            "For Streamlit Community Cloud, add GEMINI_API_KEY under "
+            "App settings > Secrets. For local runs, set it in .env."
         )
         st.stop()
 

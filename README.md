@@ -42,6 +42,19 @@ GEMINI_MODEL=gemini-3.6-flash
 Any model your key can access works — the sidebar lists them **live from the API**
 rather than from a hardcoded list.
 
+### Streamlit Community Cloud
+
+The local `.env` file is not deployed with the app. In the app dashboard, open
+**Settings > Secrets** and add:
+
+```toml
+GEMINI_API_KEY = "your-new-gemini-api-key"
+GEMINI_MODEL = "gemini-3.6-flash"
+```
+
+Save the secrets and restart/reboot the app if it does not reload automatically.
+Keep the key in Streamlit secrets; do not commit it to the repository.
+
 ## Command line
 
 The same pipeline without Streamlit:

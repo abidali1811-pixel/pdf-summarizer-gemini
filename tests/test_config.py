@@ -22,6 +22,18 @@ def test_get_settings_uses_environment(monkeypatch) -> None:
     assert settings.has_api_key
 
 
+def test_get_settings_uses_streamlit_secrets_when_environment_is_unset(monkeypatch) -> None:
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.delenv("GEMINI_MODEL", raising=False)
+
+    settings = config.get_settings(
+        secrets={"GEMINI_API_KEY": "cloud-key", "GEMINI_MODEL": "cloud-model"}
+    )
+
+    assert settings.api_key == "cloud-key"
+    assert settings.model == "cloud-model"
+
+
 def test_get_settings_overrides(monkeypatch) -> None:
     monkeypatch.setenv("GEMINI_MODEL", "env-model")
     settings = config.get_settings(model="chosen-model", chunk_tokens=2000)

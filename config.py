@@ -11,6 +11,7 @@ and unit tests keep working in a bare environment.
 from __future__ import annotations
 
 import os
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -96,11 +97,24 @@ class Settings:
         return bool(self.api_key) and not self.api_key.startswith("your")
 
 
-def get_settings(model: str | None = None, chunk_tokens: int | None = None) -> Settings:
+def get_settings(
+    model: str | None = None,
+    chunk_tokens: int | None = None,
+    secrets: Mapping[str, object] | None = None,
+) -> Settings:
     """Build a Settings object from the environment plus optional overrides."""
+    api_key = os.getenv("GEMINI_API_KEY", "").strip()
+    if not api_key and secrets is not None:
+        api_key = str(secrets.get("GEMINI_API_KEY", "")).strip()
+
+    env_model = os.getenv("GEMINI_MODEL", "").strip()
+    secret_model = ""
+    if not env_model and secrets is not None:
+        secret_model = str(secrets.get("GEMINI_MODEL", "")).strip()
+
     return Settings(
-        api_key=os.getenv("GEMINI_API_KEY", "").strip(),
-        model=(model or os.getenv("GEMINI_MODEL", "").strip() or DEFAULT_MODEL),
+        api_key=api_key,
+        model=model or env_model or secret_model or DEFAULT_MODEL,
         chunk_tokens=chunk_tokens or DEFAULT_CHUNK_TOKENS,
     )
 
