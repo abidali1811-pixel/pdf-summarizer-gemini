@@ -9,6 +9,7 @@ from __future__ import annotations
 import hashlib
 import io
 import os
+from dataclasses import replace
 
 import streamlit as st
 from streamlit.errors import StreamlitSecretNotFoundError
@@ -249,7 +250,10 @@ def main() -> None:
         progress_bar.progress(min(1.0, max(0.0, fraction)), text=message)
 
     try:
-        summarizer = PDFSummarizer(model, settings=get_settings(model, chunk_tokens))
+        summarizer = PDFSummarizer(
+            model,
+            settings=replace(settings, model=model, chunk_tokens=chunk_tokens),
+        )
         result = summarizer.run(
             document,
             style=style,

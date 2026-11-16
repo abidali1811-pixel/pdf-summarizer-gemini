@@ -267,7 +267,18 @@ class PDFSummarizer:
         style_text = STYLES.get(style, STYLES["detailed"])
         current = [row.summary for row in rows if row.ok and row.summary.strip()]
         if not current:
-            raise SummarizerError("Every chunk failed — nothing to combine")
+            failed = [row for row in rows if not row.ok]
+            details = "; ".join(
+                f"chunk {row.chunk_number}: {row.error or 'unknown error'}"
+                for row in failed[:3]
+            )
+            remaining = len(failed) - 3
+            if remaining > 0:
+                details += f"; and {remaining} more"
+            message = "Every chunk failed — nothing to combine"
+            if details:
+                message += f" ({details})"
+            raise SummarizerError(message)
         if len(current) == 1:
             return current[0]
 

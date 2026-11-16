@@ -158,6 +158,22 @@ def test_combine_raises_when_every_chunk_failed(document: Document) -> None:
         summarizer_.combine(rows, "brief")
 
 
+def test_combine_includes_chunk_errors_when_every_chunk_failed() -> None:
+    summarizer_ = PDFSummarizer(
+        settings=make_settings(), llm=FakeListChatModel(responses=["unused"])
+    )
+    rows = [
+        summarizer.ChunkSummary(1, "", False, 10, 0, "API key rejected"),
+        summarizer.ChunkSummary(2, "", False, 12, 0, "Model unavailable"),
+    ]
+
+    with pytest.raises(
+        summarizer.SummarizerError,
+        match="chunk 1: API key rejected; chunk 2: Model unavailable",
+    ):
+        summarizer_.combine(rows, "brief")
+
+
 # -- orchestration ---------------------------------------------------------
 def test_run_returns_result_and_reports_progress(document: Document) -> None:
     llm = FakeListChatModel(
